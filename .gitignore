@@ -1,0 +1,31 @@
+# --- Secrets: never commit these ---------------------------------------------
+.env
+.env.*
+!.env.example
+*.tfvars
+!*.tfvars.example
+generated/
+*.properties
+*.pem
+*.key
+
+# --- Terraform state and caches (state contains API secrets) -----------------
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+
+# --- Local only ---------------------------------------------------------------
+comms/
+logs/
+.DS_Store
+.idea/
+.vscode/

@@ -1,0 +1,44 @@
+# Copy to terraform.tfvars (git-ignored) and adjust.
+#   cp terraform.tfvars.example terraform.tfvars
+
+# ---- Pick ONE option -------------------------------------------------------
+
+# Option A: let Terraform create a small public Dedicated cluster (1 CKU).
+# Billed per hour while it exists; provisioning can take 30+ minutes.
+# create_cluster = true
+# cloud          = "AWS"
+# region         = "us-east-2"
+
+# Option B: use your existing Enterprise, Freight or Dedicated cluster.
+environment_id   = "env-abc123"
+kafka_cluster_id = "lkc-abc123"
+
+# ---- Tenants and their quotas ----------------------------------------------
+
+# Try changing these numbers and running `terraform apply` while a load test
+# is running: the new limit takes effect within about a minute, no restart.
+tenants = {
+  "payments-api" = {
+    description = "Latency-sensitive, business-critical service. Generous quota."
+    quota       = { ingress_mbps = 10, egress_mbps = 10 }
+  }
+  "nightly-etl" = {
+    description = "Batch job that would happily eat the whole cluster. Tightly contained."
+    quota       = { ingress_mbps = 1, egress_mbps = 1 }
+  }
+  "new-team" = {
+    description = "A team that has just onboarded. Nobody has given it a quota yet."
+    quota       = null
+  }
+}
+
+# The default quota applies to EVERY principal on the cluster without its own
+# quota, including workloads that are not part of this demo. Only enable it
+# on a cluster you own, or after agreeing it with the other teams.
+# default_quota = { ingress_mbps = 2, egress_mbps = 2 }
+
+# Optional: ownership labels written into resource descriptions.
+# resource_labels = {
+#   owner      = "your-name"
+#   keep_until = "2030-01-01"
+# }
